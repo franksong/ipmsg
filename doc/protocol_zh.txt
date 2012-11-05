@@ -1,0 +1,410 @@
+----------------------------------------------------------------------
+ IP Messenger 协议中文版 (草案版本 10）翻译时间 2012/11/04
+
+                       日文翻译：youjinkin    <yangrenqin2011@163.com>
+                       翻译整理：admirestator <admirestator$gmail.com>
+                                https://github.com/admirestator/OIPMsg
+                                            此文件是OIPMsg项目的一部分
+----------------------------------------------------------------------
+
+
+----------------------------------------------------------------------
+        IP Messenger 协议 (草案版本 10）     1996/02/21
+                                                    修改时间 2011/05/03
+
+                                                           H.Shirouzu
+                                                     http://ipmsg.org
+----------------------------------------------------------------------
+
+概要
+	IP Messenger使用TCP/UDP端口，提供收发消息及文件(目录)服务。
+
+特点
+	IP Messenger能够在任何具有TCP/IP协议栈的操作系统上使用，
+	能够动态识别用户。通过IP地址可以和所有在线用户进行信息交换。
+
+详細
+	IP Messenger默认使用2425端口，用如下方法进行操作。
+      （信息接收/发送：使用UDP，文件接收/发送：使用TCP）。
+
+  1.命令
+   
+     1) 命令类型（命令编号（32位）低8位）
+	IPMSG_NOOPERATION	无操作
+	IPMSG_BR_ENTRY		上线（在启动时广播）
+	IPMSG_BR_EXIT		下线（在结束时广播）
+	IPMSG_ANSENTRY		通知新上线
+	IPMSG_BR_ABSENCE	变更为离开状态
+
+	IPMSG_BR_ISGETLIST	广播搜索有效的主机用户
+	IPMSG_OKGETLIST		主机列表发出通知
+	IPMSG_GETLIST		请求主机列表
+	IPMSG_ANSLIST		应答主机列表
+
+	IPMSG_SENDMSG		发送消息
+	IPMSG_RECVMSG		接收消息确认
+
+	IPMSG_READMSG		打开消息通知
+	IPMSG_DELMSG		丢弃消息通知
+	IPMSG_ANSREADMSG	打开消息确认通知（第8版追加）
+
+	IPMSG_GETFILEDATA	请求附件（在TCP中使用）
+	IPMSG_RELEASEFILES	取消附件
+	IPMSG_GETDIRFILES	文件夹传输请求
+
+	IPMSG_GETINFO		请求IPMSG版本信息
+	IPMSG_SENDINFO		应答IPMSG版本信息
+
+	IPMSG_GETABSENCEINFO  	获取离开状态判定
+	IPMSG_SENDABSENCEINFO 	发送离开状态判定
+
+	IPMSG_GETPUBKEY	请求RSA公钥
+	IPMSG_ANSPUBKEY	应答RSA公钥
+
+     2) 类型的选项标志 (命令编号（32位）高24位)
+
+	IPMSG_ABSENCEOPT	离开状态（使用用户识别命令）
+	IPMSG_SERVEROPT	服务器（保留）
+	IPMSG_DIALUPOPT		单独（分别）发送成员识别的命令
+
+	IPMSG_SENDCHECKOPT		发送信息检查
+	IPMSG_SECRETOPT			密封信息
+	IPMSG_READCHECKOPT		密封信息确认（第8版追加）
+	IPMSG_PASSWORDOPT		密码
+	IPMSG_BROADCASTOPT		广播（广播）
+	IPMSG_MULTICASTOPT		多播（选择多个）
+	IPMSG_NEWMULTIOPT		新版本多播（保留）
+	IPMSG_NOLOGOPT			无日志模式（推荐）
+	IPMSG_NOADDLISTOPT		非BR_ENTRY不在线用户临时通知
+	IPMSG_AUTORETOPT		自动应答（防止乒乓效应）
+
+	IPMSG_FILEATTACHOPT		文件附件
+	IPMSG_ENCRYPTOPT		密码
+	IPMSG_ENCEXTMSGOPT		含有密文的文件附件信息
+
+	IPMSG_CAPUTF8OPT		兼容UTF-8编码集
+	IPMSG_UTF8OPT			所有消息使用UTF-8编码集
+	IPMSG_CLIPBOARDOPT		支持附件嵌入信息的图像
+
+	IPMSG_RETRYOPT			重发标志（获取HOST/LIST時使用）
+
+     3)  加密扩展标志（扩展位在表达式中使用十六进制组合）
+
+	IPMSG_RSA_512			公钥加密（RSA 512位）
+	IPMSG_RSA_1024			公钥加密（RSA 1024位）
+	IPMSG_RSA_2048			公钥加密（RSA 2048位）
+	IPMSG_RC2_40			密钥加密（RC2 40位共用）
+	IPMSG_BLOWFISH_128		密钥加密（Blowfish 128位）
+	IPMSG_AES_256			ÅES 256位密钥加密
+	IPMSG_PACKETNO_IV		在密钥编码IV里面使用Packet编号字符串
+	IPMSG_ENCODE_BASE64	加密的密钥使用Base64编码表示 
+	IPMSG_SIGN_SHA1			给原文添加SHA-1字签名
+
+     4) 用于附加文件类型（fileattr低8位）
+
+	IPMSG_FILE_REGULAR
+	IPMSG_FILE_DIR
+	IPMSG_FILE_RETPARENT
+	IPMSG_FILE_SYMLINK
+	IPMSG_FILE_CDEV
+	IPMSG_FILE_BDEV
+	IPMSG_FILE_FIFO
+	IPMSG_FILE_RESFORK
+
+     5) 附件文件扩展文件属性（fileattr高24位）
+	IPMSG_FILE_RONLYOPT
+	IPMSG_FILE_HIDDENOPT
+	IPMSG_FILE_EXHIDDENOPT
+	IPMSG_FILE_ARCHIVEOPT
+	IPMSG_FILE_SYSTEMOPT
+
+     6) 附件文件扩展的文件属性
+
+	IPMSG_FILE_UID
+	IPMSG_FILE_USERNAME
+	IPMSG_FILE_GID
+	IPMSG_FILE_GROUPNAME
+	IPMSG_FILE_PERM
+	IPMSG_FILE_MAJORNO
+	IPMSG_FILE_MINORNO
+	IPMSG_FILE_CTIME
+	IPMSG_FILE_MTIME
+	IPMSG_FILE_ATIME
+	IPMSG_FILE_CREATETIME
+
+	IPMSG_FILE_CREATOR
+	IPMSG_FILE_FILETYPE
+	IPMSG_FILE_FINDERINFO
+
+	IPMSG_FILE_ACL
+	IPMSG_FILE_ALIASFNAME
+
+
+  2.命令格式（均使用字符串形式）
+      
+
+     1) 命令（格式版本一）
+
+	Ver(1) : Packet编号 : 本机User名称 : 本机Host名称 : Command编号 : 附件部分
+
+     2) 使用当前命令格式发送字符串消息的示例
+     
+	"1:100:shirouzu:jupiter:32:Hello"
+
+
+  3.命令处理概述
+
+     1) 成员识别
+
+
+	启动时，使用IPMSG_BR_ENTRY命令广播，向已在线成员通告新上线成员。
+	通过广播该命令，已在线成员把新进入成员的信息添加到自己的发送列表当中，
+	同时新进入的成员应答IPMSG_ANSENTRY命令。
+	（注：Windows版的IPMSG在成员数量和IP地址距离的基础上，加入了0-4秒的随机等待时间）
+
+
+	新上线的成员通过接收 IPMSG_ANS_ENTRY命令，可以立刻获得在线用户信息，
+	因此，只要IP分组没有丢失，所有用户成员都能保有同样的发送列表。
+
+
+	对于离开或昵称的改变，广播 IPMSG_BR_ABSENCE命令以通知所有成员。
+	（与 IPMSG_BR_ABSENCE命令不同，接收到的成员不会应答 IPMSG_ANS_ENTRY命令 ）
+
+	如果在IPMSG_BR_ENTRY、 IPMSG_ANSENTRY、 以及 IPMSG_BR_ABSENCE 命令中出现离开状态，
+	设置IPMSG_ABSENCEOPT标志，并在命令的扩展部分加入昵称。
+	此外像拨号用户等，没有收到网络指定的广播的成员，需要设置 IPMSG_DIALUPOPT标志。
+	对于设置了该标志位的成员，会分别给他们发送用户判定命令。
+
+	（分组扩展）IPMSG_BR_ENTRY，IPMSG_ANSENTRY，在IPMSG_BR_ABSENCE，
+	  按照传统命令格式的字符串（插入'\0'），再输入组名，
+	  用IPMSG_BR_ENTRY, IPMSG_ANSENTRY, IPMSG_BR_ABSENCE就能发送自己所在（设置）的组名。
+
+     2) 信息接收
+
+	使用 IPMSG_SENDMSG命令发送信息，在扩展部分放入信息实体，
+	如果发送方设置了 IPMSG_SENDCHECKOPT标志位，
+	则接收方应答 IPMSG_RECVMSG命令，并在扩展部分放入该包的编号。
+
+
+	（离开通知等）自动被发送包，为了防止乒乓效应，需要设置IPMSG_AUTORETOPT标志位。
+	如果包的任何一个选项在使用时，如果该数据包设置了该标志位，就不会返回确认和自动传输数据包。
+
+	发送密封的消息则分组应该设置IPMSG_SECRETOPT标志位。
+	在这种情况下，接收方面在启封时应应答IPMSG_READMSG 命令，
+	并在扩展部分放入该包的编号。
+
+	（附加：IPMSG_NOADDLISTOPT）
+	当收到来自不在发送列表中主机发送的 IPMSG_SENDMSG命令时
+	・ 向目标主机发送 IPMSG_BR_ENTRY命令确定该主机是否存在
+	・ 也可考虑直接对添加到自己发送地址列表进行相关的处理，继而来跟踪到报名关联包的取舍状况。
+	然而，对于没有通报上线的单向信息发送是不行的，
+	在这种情况下，为了建议接收主机不遵循这样的跟踪行为，
+	需要在 IPMSG_SENDMSG命令里设置 IPMSG_NOADDLISTOPT标志位。
+
+	（关于IPMSG_READCHECKOPT标志在第8版追加）
+	如果在IPMSG_READMSG命令中设置了IPMSG_READCHECKOPT标志位，
+	同样，就像在IPMSG_SENDMSG命令中设置了IPMSG_SENDCHECKOPT标志位一样进行处理即可。
+	但是在应答时使用 IPMSG_ANSREADMSG命令而不是IPMSG_RECVMSG命令。
+
+	注意，信息的图像填入在第四节文件附件扩展部分说明。
+     
+     3) 信息收发——加密扩展（第9版追加）
+     
+	将公钥(RSA)和公用密钥(AES/Blowfish/RC2)结合即可实现。
+	加密相关的扩展分部原则上用十六进制表示。
+	但是，IPMSG_ENCODE_BASE64 具有加密功能 （见下文）
+	还有，在发送加密信息时，如果里面含有IPMSG_ENCODE_BASE64（后面叙述）的加密信息时，
+	共用密钥部分（下面会有叙述），用base64编码来代替十六进制形式。第10版添加）
+
+	（获取公钥）首先给接收方发送 IPMSG_GETPUBKEY命令，
+	然后接收对方应答IPMSG_ANSPUBKEY命令，从而得到发送方的RSA 公钥。
+	另外，在发送有IPMSG_GETPUBKEY/IPMSG_ANSPUBKEY的加密信息时，	
+	需要在扩展域的开头需要输入用按位或表示的主机的加密能力（IPMSG_RSA_2048 等）。
+	（位的详细介绍请参照，请参阅“1.3）中的加密扩展标志”）
+
+	同时，在IPMSG_ANSPUBKEY命令中，公钥会按照 EE-NNNNNN（E=指数、N=法）的形式用':'隔开。
+	同时在“E”和“N”中间添加”-“。
+	另外，在第二次接收/发送信息之后，根据公钥和加密信息的记录，可以省略这个序列。
+
+	  （信息加密化）发送方选择一个收发双方都支持的共用密钥类型生产一个共用密钥，
+	通过该密钥可以对信息进行加密。
+	同时，该密钥可以将对方的普通密钥加密。但它也存在实装组合限制。（参照4.其它）
+
+	 （加密信息发送）在 IPMSG_SENDMSG命令里设置IPMSG_ENCEXTMSGOPT标志位，
+	在扩展域的开头，填入公钥和公用密钥按位或的结果。
+	接着输入“：”，（如果设置了IPMSG_ENCODE_BASE64标志位，则用base64编码代替十六进制），
+	通过公钥加密的共用密钥，然后插入”：“，又输入将共用密钥加密的信息。但在原文的末尾会含有'\0'。
+
+	 （电子签名选项）如果两者都支持SHA-1电子签名，那么设置 IPMSG_SIGN_SHA1标志位的基础上，
+	需在前面的加密信息后输入”：“，然后再添加自己私钥给普通文章的SHA-1摘要值进行加密署名。
+ 
+	注意，关于编码和填充方式，使用RSA由公钥的密码/签名PKCS#1-V1_5，
+	由AES/Blowfish/RC2共通钥匙的加密 PKCS#5 CBC 。
+
+	另外，关于编码填充的方法，可以使用通过PKCS#1-v1_5对RSA加密/署名，
+	和通过PKCS#5 CBC对AES/Blowfish/RC2普通密钥加密化。
+	若使用了IPMSG_PACKETNO_IV，“IV”则用于包编号字符串。（比“IV”短的话，后面的位置用“0”补全）；
+	若未使用IPMSG_PACKETNO_IV，“IV”则直接改为“0”。
+ 
+	还有，如果与Entry相关的包中设置了IPMSG_ENCRYPTOPT标志位，则表示支持加密功能。
+  
+	（带有指纹的公钥用户名 第10版添加）
+	可以使用用2048位RSA 且 SHA-1签名的用户，是在用户ID的末尾添加用公钥签名的指纹（见下文），
+	就能够实现下面2种情况。
+	 1) 保持用户名称的唯一性
+	 2) 抵御伪造共用密钥的冒领攻击（因为在收到IPMSG_ANSPUBKEY命令时，需要确认密钥和指纹的一致性）。
+
+	通过以下方式创建带有公钥指纹的用户名。
+	 1) 对照生成共用公钥的方法生成公钥的 sha-1 摘要值 (160 位)。
+	 2) 在末尾32位的0 ，将其变成192位的值。
+	 3) 将192位分为3个64位的场，将这3个做异或（XOR）操作。
+	 4) 将64位值转化为16个固定字符的十六进制字符串。
+	 5) 在用户名末尾  的名称后添加“用户名< 指纹字符串 >”形式表示的指纹。
+
+	注意，尽管使用了用户名和公钥指纹，却未设置IPMSG_ENCEXTMSGOPT标志位，
+	或者在表明能够支持加密的IPMSG_GETPUBKEY/ IPMSG_ANSPUBKEY上，
+	不包含IPMSG_RSA_2048/IPMSG_SIGN_SHA1标志位，建议丢弃该分组。
+
+	还有，尽管使用这种带有指纹的公钥用户名，IPMSG_ENCRYPTOPT 标志却没有出现在Entry序列里，
+	或者IPMSG_RSA_2048/IPMSG_SIGN_SHA1没有包含在 IPMSG_GETPUBKEY/IPMSG_ANSPUBKEY的
+	加密标志位中，我们可以推断它被当做错误包而被丢弃。
+ 
+	4) 附件文件扩展 （第9版本添加）
+	发送附件文件信息（下载许可）时，需要发送一个设置了 IPMSG_FILEATTACHOPT标志位的 IPMSG_SENDMSG命令。
+	这时，再添加普通（或加密）信息，再插入'\0'，列举附件文件（可以下载）信息。 
+
+
+	fileID:filename:size:mtime:fileattr[:extend-attr=val1
+	[,val2...][:extend-attr2=...]]:\a[:]fileID...
+	(注意size, mtime, fileattr以十六进制表示文件属性。
+	如果filename中含有':'符号，应使用“::”转义)
+
+	接收方想要下载附件时，发送 IPMSG_GETFILEDATA命令请求，
+	参考和发送方UDP端口号一样的TCP端口，在扩展域放入 packetID:fileID:offset（均为十六进制表示）,
+	发出数据传输请求包。
+
+	文件发送方收到请求，再判定它是正确的请求之后再发送指定数据（没有格式）。
+
+	若数据接收方想下载阶层的附件文件时，使用 IPMSG_GETDIRFILES命令，
+	并且将 packetID:fileID写入扩展域中，再发送数据传输请求包。（全部使用十六进制表示）。
+
+	数据发送方可以用下面的格式来发送这种阶层数据。
+	header-size:filename:file-size:fileattr[:extend-attr=val1
+	[,val2...][:extend-attr2=...]]:contents-data
+	之后headersize:之后filename...
+	（除了filename与contetns-data 以外全部十六进制表示）
+
+	header-size是表示 “从header-size开始到以 contents-data前的 ':'截止的大小”。
+	extend-attr是表示可以省略和使用多种扩展属性。
+	输入使用与'='对应容量的数据值。
+
+	fileattr が IPMSG_FILE_DIR の場合、自動的にそのディレクトリに
+	潜った状態とみなして、後続のファイル情報が続きます。
+	当fileattr是IPMSG_FILE_DIR 时，会自动看作已潜入该目录状态，并附带有后面文件的数据信息。
+
+	当fileattr是IPMSG_FILE_RETPARENT时，表示返回到父目录中，并且文件名总是"."。
+	这时的属性值（在返回到父目录之前时）是，当前的目录信息。
+
+	发送过程是指从附件目录自身开始，发送IPMSG_FILE_RETPARENT信息，最后返回到附件目录的过程。
+  
+	还有，这也说明在Entry关联包中使用IPMSG_FILEATTACHOPT，能够支持附件文件。  
+ 
+
+
+	（附件文件名加密）接着之前的从信息原文末尾到输入'\0'后的叙述。
+	若对上述格式的内容进行整个信息的加密化的话，
+	这时，则需要在Entry关联包和IPMSG_SENDMSG间建立IPMSG_ENCEXTMSGOPT 。
+
+
+
+       （信息嵌入附件图像）在信息中插入图像，通常都是以附件文件的形式进行传输。
+	还有，fileattr 指定用IPMSG_FILE_CLIPBOARD。在文件名字段中，
+	指定要用包含有你想要添加的画像种类的扩展名命名的虚拟文件名。
+	一般使用PNG格式。
+	对于信息嵌入图像的位置，推荐使用上述的
+	包含有 IPMSG_FILE_CLIPBOARDPOS=的extend-attr=val这种偏中心（分支）位置（均用十六进制表示）。
+	若要插入多个图像的话，即使存在前发送的图像，也都算作一个字符图像进行计数。
+
+	支持信息嵌入图像的用户，在Entry关联包里建立IPMSG_CLIPBOARDOPT命令。
+ 
+
+     5) 多语言扩展(UTF-8)
+
+	主机可通过使用UTF-8编码集在多种语言之间进行文件（夹）和消息的收发。
+	使用设置了IPMSG_CAPUTF8OPT标志位的IPMSG_BR_ENTRY、IPMSG_ANS_ENTRY
+	和IPMSG_BR_ABSENCE命令发送数据包，表明能够使用UTF-8编码集传输信息。
+	若相互都支持IPMSG_CAPUTF8OPT的话，在设置了IPMSG_UTF8OPT标志位的基础上，
+	就能够发送用UTF-8表示的信息数据包（含有附件信息部分）。
+
+	接收附件文件时，若在本附件信息中设置了IPMSG_UTF8OPT标志位的话，
+	同样如果在IPMSG_GETFILEDATA命令中设置了IPMSG_UTF8OPT标志位，发送附件文件转发请求，
+	就能接收用UTF-8编码集表示文件名和目录名的数据。
+
+	BR关联包，关于 (IPMSG_BR_ENTRY/IPMSG_BR_EXIT/IPMSG_BR_ABSENCE)IPMSG_UTF8OPT，
+	通过IPMSG_UTF8OPT不能用UTF-8表示。（在既存的非UTF-8客户端中会出现问题。）
+	因此，BR关联包，在组名扩展的后面添加”\0\n“2位（没有输入组名扩展的话，输入\0后，
+	再接着输入\0\n，也就是说需要输入\0\0\n，以它作为虚拟组名。）后，用UTF-8的形式添加以下的Entry。
+        UN:用户名\n
+        HN:主机名\n
+	NN:昵称\n
+	GN:组名\n
+	还有，只能用ASCII表示的Entry和不存在的Entry，这2种是可以省略掉，这不构成影响。
+	如果上述的扩展和以前的字段存在不同的话，解释提到将扩展Entry是作为正确的进行处理即可。
+
+     6) 其它命令
+
+	通过发送 IPMSG_GETINFO命令，可以取得其它成员的版本信息。
+	接收方应答信息，发送IPMSG_SENDINFO命令，在扩展区域设定版本信息字符串。
+
+	对于离开状态用户，发送IPMSG_GETABSENCEINFO命令取得离开状态信息。
+	如果接收方处于离开状态，则应答IPMSG_SENDABSENCEINFO命令对离开信息进行设定。
+	如果接收方未处于离开状态，则应答相关字符串（如"Not absence mode"等）
+
+     7) 确认与重传
+
+	在某一段时间内没有收到确认分组，如IPMSG_SENDMSG，IPMSG_RECVMSG等，
+	则重传相同的包。重传的次数和间隔是依赖于具体实现的。
+
+  4. 其它
+
+     1) 换行
+
+	发出信息的换行符统一为UNIX风格('0x0a')。
+	必要情况时，则请更换形式（转义）。
+
+     2) 分隔符
+
+	使用':'作为分隔符的时候，由于用户名或主机名可能包含有用':'表示的字符串，所以这里不能使用。
+	若主机名中包含':'，请使用其他字符（例如';'）等进行置换（或转义）。
+
+     3) 字符编码
+
+	如果设置了IPMSG_UTF8OPT标志位 ，而字符编码不是UTF-8，
+	那么假设这种情况下使用CP932字符集。
+
+     4) 加密的组合
+
+	这不是协议的必需要求，请参考具体实现的描述，
+	Windows 版支持下列三个组合。
+
+	  1. IPMSG_RSA_2048 / IPMSG_AES_256      ... (*1)
+	  2. IPMSG_RSA_1024 / IPMSG_BLOWFISH_128 ... (*2)
+	  3. IPMSG_RSA_512  / IPMSG_RC2_40
+
+	  (*1) 选项中支持 IPMSG_PACKETNO_IV/IPMSG_SIGN_SHA1
+	  (*2) 选项支持 IPMSG_PACKETNO_IV 
+
+
+  5. 联系信息
+
+	http://ipmsg.org/ (日语版)
+	http://ipmsg.org/index.html.en (英文版)
+	https://github.com/admirestator/OIPMsg(中文版)
+
+
+附录：
+	命令代码请参考ipmsg.h文件。
+	请把你的意见或建议使用邮件发送给我。
+
+译注：
+	如果对中文翻译有任何意见或建议使用邮件发送给我。
