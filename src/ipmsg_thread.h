@@ -2,13 +2,15 @@
 #define _IPMSG_THREAD_H_
 
 #define HELPINFO \
-    "*       IPMSG COMMAND       *\n"\
-    "* h: help.                  *\n"\
-    "* l: listusers.             *\n"\
-    "* r: reflush users.         *\n"\
-    "* t: talk to other users.   *\n"\
-    "* s: sendfile to user.      *\n"\
-    "* q: quit.                  *\n"
+    "\t*****************************\n"\
+    "\t*       IPMSG COMMAND       *\n"\
+    "\t* h: help.                  *\n"\
+    "\t* l: listusers.             *\n"\
+    "\t* r: reflush users.         *\n"\
+    "\t* t: talk to other users.   *\n"\
+    "\t* s: sendfile to user.      *\n"\
+    "\t* q: quit.                  *\n"\
+    "\t*****************************\n"
 
 extern int interacter();
 extern int processer();

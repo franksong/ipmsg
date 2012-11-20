@@ -2,9 +2,17 @@
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <pwd.h>
+#include <semaphore.h>
+#include <pthread.h>
 #include <string.h>
+#include "common.h"
+#include "user_host.h"
 #include "ipmsg.h"
 #include "init.h"
+
+pthread_mutex_t msg_lock = PTHREAD_MUTEX_INITIALIZER;
+pthread_mutex_t user_lock = PTHREAD_MUTEX_INITIALIZER;
+sem_t msg_empty;
 
 static char user_name[NAMELEN];
 static char host_name[HOSTLEN];
@@ -15,19 +23,34 @@ static int init_sock();
 void init_ipmsg()
 {
     get_user_info();
-/*    utf8 = 0;
+    utf8 = 0;
     if (setlocale(LC_CTYPE, "")) {
         if (!strcmp(nl_langinfo(CODESET), "UTF-8")) {
             utf8 = 1;
         }
+    }
 
-        } */
-
+    init_mlist();
+    init_ulist();
     init_sock();
+    sem_init(&msg_empty, 0, 0);
     login();
 //    printf("init_ipmsg.\n"); // debug
 }
 
+int init_mlist()
+{
+    mlist.com_head = NULL;
+    mlist.com_tail = NULL;
+    return 0;
+}
+
+int init_ulist()
+{
+    ulist.user_head = NULL;
+    ulist.user_tail = NULL;
+    return 0;
+}
 int init_command(command *com)
 {
     com->version = 1;

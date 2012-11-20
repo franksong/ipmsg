@@ -9,9 +9,9 @@ int main(int argc, char *argv[])
 
     init_ipmsg();
 
-    pthread_create(&inter, NULL, interacter, NULL);
-    pthread_create(&proc, NULL, processer, NULL);
     pthread_create(&recv, NULL, receiver, &udp_sock);
+    pthread_create(&proc, NULL, processer, NULL);
+    pthread_create(&inter, NULL, interacter, NULL);
 
     pthread_join(recv, NULL);
     pthread_join(proc, NULL);
