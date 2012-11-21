@@ -5,8 +5,8 @@
 #include <string.h>
 #include "ipmsg.h"
 #include "user_host.h"
-#include "init.h"
 #include "common.h"
+#include "init.h"
 #include "send_receive.h"
 
 int send_msg(command *option, struct sockaddr_in *addr, socklen_t len)
@@ -93,8 +93,22 @@ int talkto_user()
     return 0;
 }
 
-int select_file()
+int select_files()
 {
+    printf("Not supported now!\n");
+    return 0;
+}
+
+int send_files()
+{
+    return 0;
+}
+
+int recv_files(command *com)
+{
+    printf("%s@%s send a file(s) to you!\n"
+           "But this program do not supported now.\n", com->sender_name, \
+           com->sender_host);
     return 0;
 }
 

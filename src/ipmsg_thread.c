@@ -43,7 +43,7 @@ int interacter()
                 talkto_user();
                 break;
             case 's':
-                select_file();
+                select_files();
                 break;
             case 'q':
                 logout();
@@ -99,8 +99,8 @@ int processer()
                     send_check(current_com);
                 }
                 if (opt & IPMSG_FILEATTACHOPT) {
-                    printf("IN PRO SENDMSG: receive file.\n");
-                    ;
+//                    printf("IN PRO SENDMSG: receive file.\n");
+                    recv_files(current_com);
                 }else
                     putout_msg(current_com);
                 break;

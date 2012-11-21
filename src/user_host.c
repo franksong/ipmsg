@@ -39,6 +39,7 @@ int add_user(command *com)
         }
         tmp = tmp->next;
     }
+
     if (com->addr.sin_addr.s_addr == htonl(INADDR_ANY)) {
         return -1;
     }
@@ -67,10 +68,13 @@ int del_user(command *com)
     while (cur_user != NULL) {
         if (!strcmp(com->sender_host, cur_user->host)) {
             if (cur_user == ulist.user_head) {
-                ulist.user_head = cur_user->next;
+                ulist.user_head = ulist.user_head->next;
                 cur_user->next = NULL;
                 free(cur_user);
                 break;
+            }
+            if (cur_user == ulist.user_tail) {
+                ulist.user_tail = pre_user;
             }
             pre_user->next = cur_user->next;
             cur_user->next = NULL;
