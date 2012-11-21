@@ -25,34 +25,55 @@ int send_msg(command *option, struct sockaddr_in *addr, socklen_t len)
     return 0;
 }
 
+static int input_num(int min, int max, int defualt)
+{
+    int num;
+
+    printf("Input num of user who you want to talk(cancel: 0.): ");
+    while (1) {
+        scanf("%d", &num);
+        if (num == 0) {
+            getchar();
+            return 0;
+        }
+
+        if (num < min || num > max) {
+            getchar();
+            printf("no this user, please input again: ");
+            continue;
+        }
+        getchar();
+        return num;
+    }
+
+}
+
 int talkto_user()
 {
     char input_msg[MAXLEN];
     int who, count;
     user talk_user;
+    user *ptruser;
     command sendcom;
     
     pthread_mutex_lock(&user_lock);
     count = list_users();
     pthread_mutex_unlock(&user_lock);
-    printf("Input the Num who you want to talk(0 for cancel): ");
-    while (1) {
-        scanf("%d", &who);
-        if (who == 0) {
-            printf("\n");
-            return 0;
-        }
-        if (who < 1 || who > count) {
-            printf("ERROR! no this user, input again: ");
-            continue;
-        }
-        break;
-    }
-    getchar();
-    pthread_mutex_lock(&user_lock);
-    memcpy(&talk_user, ulist.user_head+(who-1), sizeof(struct user));
-    pthread_mutex_unlock(&user_lock);
 
+    who = input_num(1, count, 1);
+    
+    if (who == 0) {
+        return 0;
+    }
+    pthread_mutex_lock(&user_lock);
+    ptruser = ulist.user_head;
+    who--;
+    while (who) {
+        ptruser = ptruser->next;
+        who--;
+    }
+    memcpy(&talk_user, ptruser, sizeof(struct user));
+    pthread_mutex_unlock(&user_lock);
     printf("\n");
     while (1) {
         printf("Talk to %s@%s(Ctrl+D for quit):~$ ", talk_user.name, \

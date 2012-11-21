@@ -1,6 +1,7 @@
 #include <netinet/in.h>
 #include <sys/socket.h>
 #include <stdlib.h>
+#include <string.h>
 #include <stdio.h>
 #include "ipmsg.h"
 #include "init.h"
@@ -102,6 +103,8 @@ int processer()
                     ;
                 }else
                     putout_msg(current_com);
+                break;
+            case IPMSG_RECVMSG:
                 break;
             case IPMSG_GETFILEDATA:
                 break;

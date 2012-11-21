@@ -1,6 +1,7 @@
 #ifndef _INIT_H_
 #define _INIT_H_
 
+#include <semaphore.h>
 #include "common.h"
 
 extern pthread_mutex_t msg_lock;

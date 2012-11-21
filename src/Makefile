@@ -1,6 +1,6 @@
 CC = clang
 CFLAGS = -g
-objects = main.o init.o user_host.o common.o send_receive.o ipmsg_thread.o
+objects = main.o init.o user_host.o common.o send_receive.o ipmsg_thread.o encode.o
 
 ipmsg: $(objects)
 	$(CC) $(CFLAGS) -o ipmsg $(objects) -lpthread
@@ -21,6 +21,9 @@ send_receive.o: send_receive.c send_receive.h init.h common.h ipmsg.h user_host.
 	$(CC) $(CFLAGS) -c $^
 
 ipmsg_thread.o: ipmsg_thread.c ipmsg_thread.h init.h send_receive.h common.h ipmsg.h
+	$(CC) $(CFLAGS) -c $^
+
+encode.o: encode.c encode.h
 	$(CC) $(CFLAGS) -c $^
 
 .PHONY: clean

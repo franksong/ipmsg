@@ -1,6 +1,8 @@
 #include <sys/utsname.h>
 #include <sys/socket.h>
 #include <netinet/in.h>
+#include <locale.h>
+#include <langinfo.h>
 #include <pwd.h>
 #include <semaphore.h>
 #include <pthread.h>

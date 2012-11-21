@@ -14,16 +14,23 @@ msg_list mlist;
 
 int create_sendbuf(char *sendbuf, command *com)
 {
-    snprintf(sendbuf, MAXLEN-1, "%d:%d:%s:%s:%d:%s",
+    char tmp[MAXLEN];
+    snprintf(tmp, MAXLEN-1, "%d:%d:%s:%s:%d:%s",
             com->version,
             com->packet_num,
             com->sender_name,
             com->sender_host,
             com->com_num,
             com->extension);
+    if (utf8) {
+        u2g(tmp, sizeof(tmp), sendbuf, MAXLEN-1);
+    }else
+        strncpy(sendbuf, tmp, MAXLEN-1);
+
     return 0;
 }
 
+/*
 static char *search_char(char *buf, char c)
 {
     char *tmp = buf;
@@ -36,19 +43,25 @@ static char *search_char(char *buf, char c)
     }
     return NULL;
 }
+*/
 
 int analysis_recvbuf(char *recvbuf, command *com)
 {
-    char *buf = recvbuf, *tmp;
+    char *buf, *tmp;
     int index = 0;
-//    printf("analysis_recvbuf: begin.*************\n");//debug
+    char code[MAXLEN];
+
+    if (utf8) {
+        g2u(recvbuf, MAXLEN, code, sizeof(code));
+        buf = code;
+    }else
+        buf = recvbuf;
+
     while (index < 6) {
         tmp = strstr(buf, ":");
-//        printf("analysis: strstr.*******\n");//debug
         if (tmp != NULL) {
             *tmp++ = '\0';
         }
-//        printf("analysis: index = %d.******\n", index);//debug
         switch (index) {
             case 0:
                 com->version = atoi(buf);

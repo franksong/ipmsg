@@ -12,14 +12,14 @@ int list_users()
     char ipaddr[INET_ADDRSTRLEN];
     int num = 1;
     printf("******************************************************************\n");
-    printf(" %-3s  %-10s%-30s%-20s\n", "Num", "Name", "Host", "IP");
+    printf("*%-3s  %-10s%-30s%-19s*\n", "Num", "Name", "Host", "IP");
     while (cur_user != NULL) {
         if (inet_ntop(AF_INET, &(cur_user->useraddr.sin_addr), ipaddr,  \
                       INET_ADDRSTRLEN) == NULL) {
             continue;
         }
 
-        printf("%3d   %-8s%-30s%-20s\n", num, cur_user->name, \
+        printf("*%2d   %-8s%-30s%-21s*\n", num, cur_user->name, \
                cur_user->host, ipaddr);
         cur_user = cur_user->next;
         num++;
