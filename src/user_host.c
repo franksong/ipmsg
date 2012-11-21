@@ -6,6 +6,7 @@
 
 user_list ulist;
 
+//list the user in ulist
 int list_users()
 {
     user *cur_user = ulist.user_head;
@@ -29,6 +30,7 @@ int list_users()
     return num-1;
 }
 
+//add new user to ulist
 int add_user(command *com)
 {
     user *new_user, *tmp;
@@ -60,6 +62,7 @@ int add_user(command *com)
     return 0;
 }
 
+//del a logout user from ulist
 int del_user(command *com)
 {
     user *pre_user, *cur_user;

@@ -24,11 +24,13 @@ int code_convert(char *to_charset, char *from_charset,
   return flag;
 }
 
+//gb2312 to utf-8
 int g2u(char *inbuf, int inlen, char *outbuf, int outlen)
 {
   return code_convert("utf-8", "gb2312", inbuf, inlen, outbuf, outlen);
 }
 
+//utf-8 to gb2312
 int u2g(char *inbuf, size_t inlen, char *outbuf, size_t outlen)
 {
   return code_convert("gb2312", "utf-8", inbuf, inlen, outbuf, outlen);

@@ -8,10 +8,11 @@
 #include "common.h"
 
 int udp_sock;
-const char allhosts[] = "255.255.255.255";
+const char allhosts[] = "255.255.255.255"; //broadcase address
 int utf8;
 msg_list mlist;
 
+//create the buf will be send from command
 int create_sendbuf(char *sendbuf, command *com)
 {
     char tmp[MAXLEN];
@@ -30,21 +31,7 @@ int create_sendbuf(char *sendbuf, command *com)
     return 0;
 }
 
-/*
-static char *search_char(char *buf, char c)
-{
-    char *tmp = buf;
-    while (*tmp != '\0') {
-        if (*tmp == c) {
-            *tmp++ = '\0';
-            return tmp;
-        }
-        tmp++;
-    }
-    return NULL;
-}
-*/
-
+// analysis the buf received to command
 int analysis_recvbuf(char *recvbuf, command *com)
 {
     char *buf, *tmp;
@@ -91,6 +78,7 @@ int analysis_recvbuf(char *recvbuf, command *com)
     return 0;
 }
 
+//create the commond will be send
 int create_commond(command *com, unsigned int flag, char *extension)
 {
     init_command(com);
@@ -102,6 +90,7 @@ int create_commond(command *com, unsigned int flag, char *extension)
     return 0;
 }
 
+//send confirm command (when receive IPMSG_SENDMSG|IPMSG_CHECKOPT)
 int send_check(command *com)
 {
     command sendcom;
@@ -113,6 +102,7 @@ int send_check(command *com)
     return 0;
 }
 
+//put out the message received
 int putout_msg(command *com)
 {
     printf("Massage from %s@%s:~# \n", com->sender_name, com->sender_host);
@@ -121,6 +111,7 @@ int putout_msg(command *com)
     return 0;
 }
 
+//send IPMSG_ANSENTRY command(when recv IPMSG_BR_ENTRY)
 int send_recventry(command *com)
 {
     command sendcom;

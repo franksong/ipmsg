@@ -12,9 +12,9 @@
 #include "ipmsg.h"
 #include "init.h"
 
-pthread_mutex_t msg_lock = PTHREAD_MUTEX_INITIALIZER;
-pthread_mutex_t user_lock = PTHREAD_MUTEX_INITIALIZER;
-sem_t msg_empty;
+pthread_mutex_t msg_lock = PTHREAD_MUTEX_INITIALIZER; //msg_list lock
+pthread_mutex_t user_lock = PTHREAD_MUTEX_INITIALIZER; //user_list lock
+sem_t msg_empty; //msg_list empty signal
 
 static char user_name[NAMELEN];
 static char host_name[HOSTLEN];
@@ -25,6 +25,7 @@ static int init_sock();
 void init_ipmsg()
 {
     get_user_info();
+    //encode
     utf8 = 0;
     if (setlocale(LC_CTYPE, "")) {
         if (!strcmp(nl_langinfo(CODESET), "UTF-8")) {
@@ -37,7 +38,6 @@ void init_ipmsg()
     init_sock();
     sem_init(&msg_empty, 0, 0);
     login();
-//    printf("init_ipmsg.\n"); // debug
 }
 
 int init_mlist()
@@ -53,6 +53,7 @@ int init_ulist()
     ulist.user_tail = NULL;
     return 0;
 }
+
 int init_command(command *com)
 {
     com->version = 1;

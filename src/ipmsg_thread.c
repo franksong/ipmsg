@@ -9,6 +9,7 @@
 #include "send_receive.h"
 #include "ipmsg_thread.h"
 
+// interacter thread
 int interacter()
 {
     char input;
@@ -59,6 +60,7 @@ int interacter()
     return 0;
 }
 
+//process recv's command thread
 int processer()
 {
     command *current_com;
@@ -121,6 +123,7 @@ int processer()
     return 0;
 }
 
+//receiver command thread
 int receiver(void *option)
 {
     int sock = *((int*)option);

@@ -9,6 +9,7 @@
 #include "init.h"
 #include "send_receive.h"
 
+//send command message
 int send_msg(command *option, struct sockaddr_in *addr, socklen_t len)
 {
     char sendbuf[MAXLEN];
@@ -25,6 +26,7 @@ int send_msg(command *option, struct sockaddr_in *addr, socklen_t len)
     return 0;
 }
 
+//receive a num from stdin (for select user)
 static int input_num(int min, int max, int defualt)
 {
     int num;
@@ -48,6 +50,7 @@ static int input_num(int min, int max, int defualt)
 
 }
 
+//send message to a user
 int talkto_user()
 {
     char input_msg[MAXLEN];
@@ -93,6 +96,7 @@ int talkto_user()
     return 0;
 }
 
+//select a file(dir) which want to send
 int select_files()
 {
     printf("Not supported now!\n");
@@ -104,6 +108,7 @@ int send_files()
     return 0;
 }
 
+// receive file(dir) when an user send to you
 int recv_files(command *com)
 {
     printf("%s@%s send a file(s) to you!\n"
@@ -111,6 +116,7 @@ int recv_files(command *com)
            com->sender_host);
     return 0;
 }
+
 
 void login()
 {
