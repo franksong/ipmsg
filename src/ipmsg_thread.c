@@ -99,7 +99,7 @@ int processer()
                     send_check(current_com);
                 }
                 if (opt & IPMSG_FILEATTACHOPT) {
-                    printf("IN PRO SENDMSG file.\n");
+                    printf("IN PRO SENDMSG: receive file.\n");
                     ;
                 }else
                     putout_msg(current_com);
