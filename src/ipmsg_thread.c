@@ -85,39 +85,48 @@ int processer()
                 pthread_mutex_lock(&user_lock);
                 add_user(current_com);
                 pthread_mutex_unlock(&user_lock);
+                free(current_com);
                 break;
             case IPMSG_BR_EXIT:
                 pthread_mutex_lock(&user_lock);
                 del_user(current_com);
                 pthread_mutex_unlock(&user_lock);
+                free(current_com);
                 break;
             case IPMSG_ANSENTRY:
                 pthread_mutex_lock(&user_lock);
                 add_user(current_com);
                 pthread_mutex_unlock(&user_lock);
+                free(current_com);
                 break;
             case IPMSG_SENDMSG:
                 if (opt & IPMSG_SENDCHECKOPT) {
                     send_check(current_com);
                 }
                 if (opt & IPMSG_FILEATTACHOPT) {
-//                    printf("IN PRO SENDMSG: receive file.\n");
+                    printf("IN PRO SENDMSG: receive file.\n");
                     recv_files(current_com);
-                }else
+                }else {
                     putout_msg(current_com);
+                    free(current_com);
+                }
                 break;
             case IPMSG_RECVMSG:
+                free(current_com);
                 break;
             case IPMSG_GETFILEDATA:
+                free(current_com);
                 break;
             case IPMSG_GETDIRFILES:
+                free(current_com);
                 break;
             case IPMSG_RELEASEFILES:
+                free(current_com);
                 break;
             default:
+                free(current_com);
                 break;
         }
-        free(current_com);
     }
 
     return 0;
@@ -138,6 +147,13 @@ int receiver(void *option)
             printf("receiver error: recvfrom() < 0.\n");
             continue;
         }
+/*        int i = 0;
+        printf("\nrecv: ");
+        while (i < MAXLEN) {
+            printf("%c", recvbuf[i]);
+            i++;
+        }
+*/
         printf("\nrecvbuf: %s\n", recvbuf); //debug
         newcom = (command *)malloc(sizeof(command));
         memset(newcom, 0, sizeof(command));
