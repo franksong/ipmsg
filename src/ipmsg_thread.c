@@ -44,10 +44,11 @@ int interacter()
                 talkto_user();
                 break;
             case 's':
-                select_files();
+                send_files();
                 break;
             case 'q':
                 logout();
+                printf("Bye!!!\n");
                 exit(0);
             case 10:
                 break;
@@ -147,13 +148,6 @@ int receiver(void *option)
             printf("receiver error: recvfrom() < 0.\n");
             continue;
         }
-/*        int i = 0;
-        printf("\nrecv: ");
-        while (i < MAXLEN) {
-            printf("%c", recvbuf[i]);
-            i++;
-        }
-*/
         printf("\nrecvbuf: %s\n", recvbuf); //debug
         newcom = (command *)malloc(sizeof(command));
         memset(newcom, 0, sizeof(command));

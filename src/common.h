@@ -10,8 +10,9 @@
 #define MAXLEN  1024
 #define RECVLEN 1500
 #define SENDLEN 1500
+#define LISTENQ 1024
 
-typedef struct file_info {
+struct file_info {
     unsigned int  fileID;
 //    char fileID[NAMELEN];
     char filename[NAMELEN];

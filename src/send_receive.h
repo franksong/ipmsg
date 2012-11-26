@@ -4,7 +4,7 @@
 #include "common.h"
 
 extern int talkto_user();
-extern int select_files();
+extern int send_files();
 extern int recv_files(command *com);
 extern void login();
 extern void logout();
