@@ -1,5 +1,9 @@
 IPMSG
 	A open source ipmsg for linux, could transfer message, file and folder.
+	遵循IPMSG协议，可以与其他IPMSG客户端正常交互，与win下客户端基本兼
+	容。
+	传输文件时，一次只能处理一个文件。
+	未实现传送和接受文件夹功能。
 
 Authur
 	@Frank  spf.doudou@gmail.com
