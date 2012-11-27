@@ -175,7 +175,7 @@ int send_files()
 static unsigned int transmit_data(command *com, int fd)
 {
     FILE *sendfile;
-    unsigned int filesize, readbytes;
+    unsigned int filesize, readbytes, realcount;
     char sendbuf[SENDLEN];
     
     filesize = hextodec(com->fileinfo.filesize);
@@ -183,12 +183,14 @@ static unsigned int transmit_data(command *com, int fd)
         printf("tarnsmit_data: fopen error.\n");
         return -1;
     }
-    while (filesize > 0) {
-        readbytes = SENDLEN > filesize ? filesize : SENDLEN;
-        fread(sendbuf, sizeof(char), readbytes, sendfile);
-        writen(fd, sendbuf, sizeof(sendbuf));
+    while (1) {
+        readbytes = fread(sendbuf, sizeof(char), SENDLEN, sendfile);
+        if (writen(fd, sendbuf, readbytes) <= 0) {
+            break;
+        }
     }
-
+    fclose(sendfile);
+    printf("tarnsimit_data finished.\n");
     return 0;
 }
 static int send_data(command *com)
@@ -204,7 +206,6 @@ static int send_data(command *com)
         printf("send_data: socket error.\n");
         return -1;
     }
-    printf("send_data: socket finished.\n");//debug
     bzero(&servaddr, sizeof(servaddr));
     servaddr.sin_family = AF_INET;
     servaddr.sin_addr.s_addr = htonl(INADDR_ANY);
@@ -213,20 +214,16 @@ static int send_data(command *com)
         printf("send_data: bind error.\n");
         return -1;
     }
-    printf("send_data: bind finished.\n");//debug
     if (listen(tcpsock, LISTENQ) != 0) {
         printf("send_data: listen error.\n");
         return -1;
     }
-    printf("send_data: listen finished.\n");//debug
     send_msg(com, &com->addr, sizeof(com->addr));
     while (1) {
         connfd = accept(tcpsock, (struct servaddr *)NULL, NULL);
         if (connfd < 0) {
-            printf("send_data: accept error.\n");
             continue;
         }
-        printf("send_data: accept finished.\n");//debug
         transmit_data(com, connfd);
         break;
 /*        readn(connfd, recvbuf, sizeof(recvbuf));
@@ -270,7 +267,7 @@ static int send_data(command *com)
             continue;
         }*/
     }
-    close(connfd);
+    shutdown(connfd, SHUT_WR);
     free(com);
     printf("send file finished.\n");
     return 0;
